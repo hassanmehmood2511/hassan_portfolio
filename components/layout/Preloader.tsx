@@ -11,7 +11,7 @@ export const Preloader: React.FC<{ onComplete?: () => void }> = ({ onComplete })
 
   useEffect(() => {
     // Check if user already saw preloader in this session
-    const hasSeen = sessionStorage.getItem("hhm_preloader_seen");
+    const hasSeen = sessionStorage.getItem("hm_preloader_seen");
     if (hasSeen) {
       setIsLoading(false);
       if (onComplete) onComplete();
@@ -26,7 +26,7 @@ export const Preloader: React.FC<{ onComplete?: () => void }> = ({ onComplete })
           clearInterval(interval);
           setTimeout(() => {
             setIsLoading(false);
-            sessionStorage.setItem("hhm_preloader_seen", "true");
+            sessionStorage.setItem("hm_preloader_seen", "true");
             if (onComplete) onComplete();
           }, 400);
           return 100;
@@ -51,7 +51,7 @@ export const Preloader: React.FC<{ onComplete?: () => void }> = ({ onComplete })
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-lg bg-[#C98A4B]/20 border border-[#C98A4B] flex items-center justify-center font-display font-bold text-xs text-[#C98A4B]">
-                HHM
+                HM
               </div>
               <span className="font-display font-bold text-sm tracking-wider uppercase">
                 Hafiz Hassan Mehmood

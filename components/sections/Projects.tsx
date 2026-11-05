@@ -1,13 +1,16 @@
 "use client";
 
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { SectionHeading } from "../ui/SectionHeading";
 import { TiltCard } from "../ui/TiltCard";
 import { MagneticButton } from "../ui/MagneticButton";
+import { FloatingGlassShapes } from "../ui/FloatingGlassShapes";
 import { projects } from "@/data/projects";
 import { ExternalLink, ShieldCheck, Smartphone, Cpu, ShoppingBag, BarChart3 } from "lucide-react";
 import { GithubIcon } from "../ui/Icons";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
 
 const MotifIcon: React.FC<{ motif: string }> = ({ motif }) => {
   switch (motif) {
@@ -25,24 +28,43 @@ const MotifIcon: React.FC<{ motif: string }> = ({ motif }) => {
 };
 
 export const Projects: React.FC = () => {
-  return (
-    <section id="projects" className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-      <SectionHeading
-        number="04"
-        title="Featured Projects"
-        subtitle="A collection of web, backend, and mobile software applications built for real-world impact."
-      />
+  const sectionRef = useRef<HTMLElement>(null);
+  const isMobile = useIsMobile();
+  const prefersReducedMotion = useReducedMotion();
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+
+  const headingY = useTransform(scrollYProgress, [0, 1], [0, -20]);
+  const gridY = useTransform(scrollYProgress, [0, 1], [0, 20]);
+
+  const disableParallax = isMobile || prefersReducedMotion;
+
+  return (
+    <section
+      ref={sectionRef}
+      id="projects"
+      className="relative py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto overflow-hidden bg-gradient-to-b from-transparent via-[var(--card-bg)]/20 to-transparent transition-colors duration-500"
+    >
+      <FloatingGlassShapes variant="B" />
+
+      <motion.div style={disableParallax ? {} : { y: headingY }} className="relative z-10">
+        <SectionHeading
+          number="04"
+          title="Featured Projects"
+          subtitle="A collection of web, backend, and mobile software applications built for real-world impact."
+        />
+      </motion.div>
+
+      <motion.div
+        style={disableParallax ? {} : { y: gridY }}
+        className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-8"
+      >
         {projects.map((project, idx) => {
           return (
-            <motion.div
-              key={project.id}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.6, delay: idx * 0.15 }}
-            >
+            <motion.div key={project.id} className="h-full">
               <TiltCard className="h-full flex flex-col justify-between group">
                 <div>
                   {/* Generated Cover vs Real Screenshot Image Container */}
@@ -71,7 +93,7 @@ export const Projects: React.FC = () => {
                         />
 
                         <motion.div
-                          whileHover={{ rotate: 5, scale: 1.1 }}
+                          whileHover={disableParallax ? {} : { rotate: 5, scale: 1.1 }}
                           transition={{ duration: 0.3 }}
                           className="p-5 rounded-2xl bg-[var(--bg-deep)]/60 backdrop-blur-md border border-[var(--accent)]/40 shadow-xl z-10"
                         >
@@ -172,7 +194,7 @@ export const Projects: React.FC = () => {
             </motion.div>
           );
         })}
-      </div>
+      </motion.div>
     </section>
   );
 };

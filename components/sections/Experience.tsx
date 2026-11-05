@@ -1,22 +1,50 @@
 "use client";
 
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { SectionHeading } from "../ui/SectionHeading";
 import { TiltCard } from "../ui/TiltCard";
+import { FloatingGlassShapes } from "../ui/FloatingGlassShapes";
 import { experiences } from "@/data/experience";
-import { Briefcase, Calendar, MapPin, Sparkles, CheckCircle2, ChevronRight } from "lucide-react";
+import { Briefcase, Calendar, MapPin, Sparkles, ChevronRight } from "lucide-react";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
 
 export const Experience: React.FC = () => {
-  return (
-    <section id="experience" className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-      <SectionHeading
-        number="03"
-        title="Professional Experience"
-        subtitle="A history of technical leadership, full-stack architecture, and agile sprint execution."
-      />
+  const sectionRef = useRef<HTMLElement>(null);
+  const isMobile = useIsMobile();
+  const prefersReducedMotion = useReducedMotion();
 
-      <div className="relative border-l-2 border-[var(--border-color)] ml-4 md:ml-8 pl-6 md:pl-10 space-y-12">
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+
+  const headingY = useTransform(scrollYProgress, [0, 1], [0, -25]);
+  const contentY = useTransform(scrollYProgress, [0, 1], [0, 15]);
+
+  const disableParallax = isMobile || prefersReducedMotion;
+
+  return (
+    <section
+      ref={sectionRef}
+      id="experience"
+      className="relative py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto overflow-hidden bg-gradient-to-b from-transparent via-[var(--bg-forest)]/10 to-transparent transition-colors duration-500"
+    >
+      <FloatingGlassShapes variant="A" />
+
+      <motion.div style={disableParallax ? {} : { y: headingY }} className="relative z-10">
+        <SectionHeading
+          number="03"
+          title="Professional Experience"
+          subtitle="A history of technical leadership, full-stack architecture, and agile sprint execution."
+        />
+      </motion.div>
+
+      <motion.div
+        style={disableParallax ? {} : { y: contentY }}
+        className="relative z-10 border-l-2 border-[var(--border-color)] ml-4 md:ml-8 pl-6 md:pl-10 space-y-12"
+      >
         {/* Animated glowing vertical timeline line overlay */}
         <motion.div
           className="absolute left-[-2px] top-0 w-[2px] bg-gradient-to-b from-[var(--accent)] via-[var(--green-mid)] to-[var(--accent)]"
@@ -131,7 +159,7 @@ export const Experience: React.FC = () => {
             </motion.div>
           );
         })}
-      </div>
+      </motion.div>
     </section>
   );
 };

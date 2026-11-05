@@ -1,36 +1,58 @@
 "use client";
 
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { SectionHeading } from "../ui/SectionHeading";
 import { TiltCard } from "../ui/TiltCard";
+import { FloatingGlassShapes } from "../ui/FloatingGlassShapes";
 import { educationList, languagesList } from "@/data/education";
-import { GraduationCap, Calendar, MapPin, Languages, CheckCircle2 } from "lucide-react";
+import { GraduationCap, Calendar, Languages, CheckCircle2 } from "lucide-react";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
 
 export const Education: React.FC = () => {
-  return (
-    <section id="education" className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-      <SectionHeading
-        number="05"
-        title="Education & Languages"
-        subtitle="Academic foundations and linguistic capabilities supporting global collaboration."
-      />
+  const sectionRef = useRef<HTMLElement>(null);
+  const isMobile = useIsMobile();
+  const prefersReducedMotion = useReducedMotion();
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+
+  const headingY = useTransform(scrollYProgress, [0, 1], [0, -15]);
+  const contentY = useTransform(scrollYProgress, [0, 1], [0, 15]);
+
+  const disableParallax = isMobile || prefersReducedMotion;
+
+  return (
+    <section
+      ref={sectionRef}
+      id="education"
+      className="relative py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto overflow-hidden bg-gradient-to-b from-transparent via-[var(--bg-forest)]/10 to-transparent transition-colors duration-500"
+    >
+      <FloatingGlassShapes variant="C" />
+
+      <motion.div style={disableParallax ? {} : { y: headingY }} className="relative z-10">
+        <SectionHeading
+          number="05"
+          title="Education & Languages"
+          subtitle="Academic foundations and linguistic capabilities supporting global collaboration."
+        />
+      </motion.div>
+
+      <motion.div
+        style={disableParallax ? {} : { y: contentY }}
+        className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8"
+      >
         {/* Education Timeline Cards (Left 7 Cols) */}
         <div className="lg:col-span-7 space-y-6">
           <h3 className="font-display font-bold text-xl text-[var(--text-primary)] mb-4 flex items-center gap-2">
             <GraduationCap className="w-5 h-5 text-[var(--accent)]" /> Academic Degrees
           </h3>
 
-          {educationList.map((edu, idx) => (
-            <motion.div
-              key={edu.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: idx * 0.1, duration: 0.5 }}
-            >
+          {educationList.map((edu) => (
+            <div key={edu.id}>
               <TiltCard className="p-6">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
                   <h4 className="font-display font-bold text-lg text-[var(--text-primary)]">
@@ -66,7 +88,7 @@ export const Education: React.FC = () => {
                   </div>
                 )}
               </TiltCard>
-            </motion.div>
+            </div>
           ))}
         </div>
 
@@ -104,7 +126,7 @@ export const Education: React.FC = () => {
             </div>
           </TiltCard>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 };

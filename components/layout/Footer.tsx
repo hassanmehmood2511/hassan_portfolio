@@ -24,7 +24,7 @@ export const Footer: React.FC = () => {
         <div className="flex flex-col items-center md:items-start gap-2 text-center md:text-left">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg bg-[var(--accent)]/15 border border-[var(--accent)]/40 flex items-center justify-center font-display font-bold text-xs text-[var(--accent)]">
-              HHM
+              HM
             </div>
             <span className="font-display font-bold text-base tracking-wide text-[var(--text-primary)]">
               {siteConfig.name}

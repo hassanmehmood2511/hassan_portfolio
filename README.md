@@ -10,7 +10,7 @@ Built with **Next.js 16 (App Router)**, **TypeScript**, **Tailwind CSS**, **Thre
 
 - **"Forest to Sand" Design System**: Deep forest green (`#0A2218`) fading into warm sand (`#F3EBDD`) with copper-gold (`#C98A4B`) highlights matching the TechNest Nova brand DNA.
 - **Persistent R3F 3D Canvas**:
-  - **Hero 3D Portrait**: Floating 3D-tilt portrait card loaded from `/profile/hassan.jpg` with a graceful fallback avatar ("HHM") and copper-gold rim glow.
+  - **Hero 3D Portrait**: Floating 3D-tilt portrait card loaded from `/profile/hassan.jpg` with a graceful fallback avatar ("HM") and copper-gold rim glow.
   - **Skill Constellation**: Interactive 3D constellation grouping skills into 5 distinct spatial clusters connected by dynamic glowing lines and billboarded labels. Hovering highlights nodes and connections; category pills filter and focus camera/clusters.
   - **Adaptive Camera Rig**: Smoothly damped camera movement driven by scroll progress.
   - **Theme Adaptation**: Lights, particles, fog, and materials automatically shift between dark and light themes.

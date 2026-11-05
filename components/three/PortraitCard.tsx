@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import { useTexture, Text } from "@react-three/drei";
 import * as THREE from "three";
@@ -69,26 +69,17 @@ export const PortraitCard: React.FC<{ position?: [number, number, number] }> = (
         )}
       </mesh>
 
-      {/* Fallback Initials Text if Texture Fails */}
+      {/* Fallback Initials Avatar ONLY if Image is Missing */}
       {(!texture || !imageLoaded) && (
         <group position={[0, 0, 0.05]}>
           <Text
-            fontSize={0.6}
+            fontSize={0.7}
             color="#C98A4B"
             font="/fonts/SpaceGrotesk-Bold.ttf"
             anchorX="center"
             anchorY="middle"
           >
-            HHM
-          </Text>
-          <Text
-            position={[0, -0.6, 0]}
-            fontSize={0.16}
-            color="#F3EBDD"
-            anchorX="center"
-            anchorY="middle"
-          >
-            HAFIZ HASSAN MEHMOOD
+            HM
           </Text>
         </group>
       )}

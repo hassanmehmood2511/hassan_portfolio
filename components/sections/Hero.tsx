@@ -18,7 +18,7 @@ export const Hero: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
         {/* Left Text Column */}
-        <div className="lg:col-span-7 flex flex-col gap-6 z-10">
+        <div className="lg:col-span-7 flex flex-col gap-6 z-10 max-w-full">
           {/* Eyebrow badge */}
           <motion.div
             initial={{ opacity: 0, y: 15 }}
@@ -31,9 +31,12 @@ export const Hero: React.FC = () => {
             <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)] animate-ping" />
           </motion.div>
 
-          {/* Name SplitText Reveal */}
-          <div className="font-display font-extrabold text-4xl sm:text-6xl lg:text-7xl tracking-tight text-[var(--text-primary)] leading-[1.08]">
-            <SplitText text={siteConfig.name} delay={0.1} />
+          {/* Name SplitText Reveal - Single Line Guarantee */}
+          <div
+            className="font-display font-extrabold tracking-tight text-[var(--text-primary)] leading-[1.08] whitespace-nowrap overflow-visible max-w-full"
+            style={{ fontSize: "clamp(1.8rem, 5.2vw, 4.5rem)" }}
+          >
+            <SplitText text={siteConfig.name} delay={0.1} className="whitespace-nowrap inline-block" />
           </div>
 
           {/* Headline */}
@@ -116,36 +119,8 @@ export const Hero: React.FC = () => {
           </motion.div>
         </div>
 
-        {/* Right Column: 3D Portrait space on desktop or CSS fallback frame */}
+        {/* Right Column: Space for the floating background portrait */}
         <div className="lg:col-span-5 relative flex items-center justify-center min-h-[380px] lg:min-h-[480px]">
-          {/* Subtle decorative card border for mobile or overlay */}
-          <div className="relative w-full max-w-sm aspect-[4/5] rounded-3xl border border-[var(--accent)]/30 p-2 bg-[var(--card-bg)]/40 backdrop-blur-md shadow-2xl flex flex-col items-center justify-center overflow-hidden group">
-            <img
-              src="/profile/hassan.jpg"
-              alt="Hafiz Hassan Mehmood"
-              className="w-full h-full object-cover rounded-2xl filter brightness-95 contrast-105 group-hover:scale-105 transition-transform duration-700"
-              onError={(e) => {
-                // Hide image if missing, reveal avatar fallback
-                (e.target as HTMLElement).style.display = "none";
-              }}
-            />
-            {/* Fallback avatar overlay if image fails */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center bg-[var(--bg-forest)] text-[var(--sand-light)] p-6 text-center">
-              <div className="w-20 h-20 rounded-2xl bg-[var(--accent)]/20 border-2 border-[var(--accent)] flex items-center justify-center font-display font-bold text-2xl text-[var(--accent)] mb-3">
-                HHM
-              </div>
-              <h3 className="font-display font-bold text-lg">{siteConfig.name}</h3>
-              <p className="text-xs text-[var(--text-muted)] font-mono mt-1">
-                TechNest Nova Senior Developer
-              </p>
-            </div>
-
-            {/* Accent Corner Label */}
-            <div className="absolute bottom-4 left-4 right-4 p-3 rounded-xl bg-[var(--bg-deep)]/85 backdrop-blur-md border border-[var(--accent)]/40 flex items-center justify-between text-xs font-mono">
-              <span className="text-[var(--accent)] font-bold">Hafiz Hassan Mehmood</span>
-              <span className="text-[var(--text-muted)]">Bahawalpur, PK</span>
-            </div>
-          </div>
         </div>
       </div>
     </section>

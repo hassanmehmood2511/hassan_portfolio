@@ -51,7 +51,7 @@ export const Navbar: React.FC = () => {
             data-cursor="Home"
           >
             <div className="w-10 h-10 rounded-xl bg-[var(--accent)]/15 border border-[var(--accent)]/40 flex items-center justify-center font-display font-bold text-lg text-[var(--accent)] group-hover:scale-105 group-hover:border-[var(--accent)] group-hover:shadow-md group-hover:shadow-[var(--accent)]/20 transition-all">
-              HHM
+              HM
             </div>
             <div className="hidden sm:flex flex-col">
               <span className="font-display font-bold text-sm tracking-wide text-[var(--text-primary)]">

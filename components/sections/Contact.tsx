@@ -1,13 +1,14 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { SectionHeading } from "../ui/SectionHeading";
 import { TiltCard } from "../ui/TiltCard";
 import { MagneticButton } from "../ui/MagneticButton";
+import { FloatingGlassShapes } from "../ui/FloatingGlassShapes";
 import { siteConfig } from "@/data/site";
 import {
   Mail,
@@ -19,6 +20,8 @@ import {
   Sparkles,
 } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "../ui/Icons";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
 
 const contactSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -31,8 +34,22 @@ const contactSchema = z.object({
 type ContactFormData = z.infer<typeof contactSchema>;
 
 export const Contact: React.FC = () => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const isMobile = useIsMobile();
+  const prefersReducedMotion = useReducedMotion();
+
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+
+  const headingY = useTransform(scrollYProgress, [0, 1], [0, -15]);
+  const contentY = useTransform(scrollYProgress, [0, 1], [0, 15]);
+
+  const disableParallax = isMobile || prefersReducedMotion;
 
   const {
     register,
@@ -70,14 +87,25 @@ export const Contact: React.FC = () => {
   };
 
   return (
-    <section id="contact" className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-      <SectionHeading
-        number="06"
-        title="Let's build something great"
-        subtitle="Have a project in mind, an architectural query, or a position at your organization? Get in touch!"
-      />
+    <section
+      ref={sectionRef}
+      id="contact"
+      className="relative py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto overflow-hidden bg-gradient-to-b from-transparent via-[var(--bg-forest)]/10 to-transparent transition-colors duration-500"
+    >
+      <FloatingGlassShapes variant="A" />
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <motion.div style={disableParallax ? {} : { y: headingY }} className="relative z-10">
+        <SectionHeading
+          number="06"
+          title="Let's build something great"
+          subtitle="Have a project in mind, an architectural query, or a position at your organization? Get in touch!"
+        />
+      </motion.div>
+
+      <motion.div
+        style={disableParallax ? {} : { y: contentY }}
+        className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start"
+      >
         {/* Left Info Column (5 Cols) */}
         <div className="lg:col-span-5 space-y-6">
           <TiltCard className="p-8">
@@ -291,7 +319,7 @@ export const Contact: React.FC = () => {
             </form>
           </TiltCard>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 };
