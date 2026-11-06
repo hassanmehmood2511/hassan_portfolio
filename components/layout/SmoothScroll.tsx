@@ -4,51 +4,52 @@ import React, { useEffect } from "react";
 import Lenis from "lenis";
 import { useScrollProgress } from "@/hooks/useScrollProgress";
 
+const SECTIONS = ["hero", "about", "skills", "experience", "projects", "education", "contact"];
+
 export const SmoothScroll: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { setProgress, setActiveSection } = useScrollProgress();
+  const { setActiveSection } = useScrollProgress();
 
   useEffect(() => {
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
     const lenis = new Lenis({
-      duration: 1.2,
+      duration: 1.15,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: "vertical",
       gestureOrientation: "vertical",
-      smoothWheel: true,
-      touchMultiplier: 2,
+      smoothWheel: !reduced,
+      touchMultiplier: 1.6,
+      // Smoothly glide to in-page links (#contact etc.), clearing the fixed header
+      anchors: { offset: -88 },
     });
 
-    function onScroll(e: any) {
-      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = Math.max(0, Math.min(1, window.scrollY / (scrollHeight || 1)));
-      setProgress(progress);
-
-      // Determine active section
-      const sections = ["hero", "about", "skills", "experience", "projects", "education", "contact"];
-      for (const sectionId of sections) {
+    function onScroll() {
+      // Only updates React state when the active section actually changes
+      for (const sectionId of SECTIONS) {
         const el = document.getElementById(sectionId);
-        if (el) {
-          const rect = el.getBoundingClientRect();
-          if (rect.top <= window.innerHeight * 0.4 && rect.bottom >= window.innerHeight * 0.1) {
-            setActiveSection(sectionId);
-            break;
-          }
+        if (!el) continue;
+        const rect = el.getBoundingClientRect();
+        if (rect.top <= window.innerHeight * 0.4 && rect.bottom >= window.innerHeight * 0.1) {
+          setActiveSection(sectionId);
+          break;
         }
       }
     }
 
     lenis.on("scroll", onScroll);
 
+    let rafId = 0;
     function raf(time: number) {
       lenis.raf(time);
-      requestAnimationFrame(raf);
+      rafId = requestAnimationFrame(raf);
     }
-
-    requestAnimationFrame(raf);
+    rafId = requestAnimationFrame(raf);
 
     return () => {
+      cancelAnimationFrame(rafId);
       lenis.destroy();
     };
-  }, [setProgress, setActiveSection]);
+  }, [setActiveSection]);
 
   return <>{children}</>;
 };

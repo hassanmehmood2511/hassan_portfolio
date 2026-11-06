@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useProgress } from "@react-three/drei";
+import Image from "next/image";
 
 export const Preloader: React.FC<{ onComplete?: () => void }> = ({ onComplete }) => {
   const { progress } = useProgress();
@@ -50,8 +51,15 @@ export const Preloader: React.FC<{ onComplete?: () => void }> = ({ onComplete })
           {/* Top Wordmark */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-lg bg-[#C98A4B]/20 border border-[#C98A4B] flex items-center justify-center font-display font-bold text-xs text-[#C98A4B]">
-                HM
+              <div className="relative w-9 h-9 rounded-full overflow-hidden ring-2 ring-[#C98A4B]/70 ring-offset-2 ring-offset-[#0A2218] shrink-0">
+                <Image
+                  src="/profile/hassan.jpg"
+                  alt="Hafiz Hassan Mehmood"
+                  fill
+                  sizes="36px"
+                  priority
+                  className="object-cover object-top"
+                />
               </div>
               <span className="font-display font-bold text-sm tracking-wider uppercase">
                 Hafiz Hassan Mehmood

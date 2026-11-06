@@ -3,43 +3,39 @@
 import React, { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
-import { useScrollProgress } from "@/hooks/useScrollProgress";
-import { usePointer } from "@/hooks/usePointer";
+import { usePointerRef } from "@/hooks/usePointerRef";
 
 export const CameraRig: React.FC = () => {
-  const { progress } = useScrollProgress();
-  const pointer = usePointer();
+  const pointerRef = usePointerRef();
   const targetPos = useRef(new THREE.Vector3(0, 0, 5.5));
   const targetLook = useRef(new THREE.Vector3(0, 0, 0));
 
   useFrame((state, delta) => {
-    // Determine keyframe target based on scroll progress (0 to 1)
-    const p = progress;
+    // Read scroll position directly each frame (no React re-renders while scrolling)
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const p = max > 0 ? window.scrollY / max : 0;
+    const pointer = pointerRef.current;
 
     if (p < 0.2) {
       // Hero section
       targetPos.current.set(pointer.x * 0.3, pointer.y * 0.3, 5.5);
-      targetLook.current.set(0, 0, 0);
     } else if (p < 0.45) {
-      // Skills constellation section
+      // Skills section
       targetPos.current.set(pointer.x * 0.5, 0, 6.5);
-      targetLook.current.set(0, 0, 0);
     } else if (p < 0.7) {
       // Experience section
       targetPos.current.set(-1.0 + pointer.x * 0.2, 0, 5.2);
-      targetLook.current.set(0, 0, 0);
     } else if (p < 0.88) {
       // Projects section
       targetPos.current.set(1.0 + pointer.x * 0.2, 0, 5.5);
-      targetLook.current.set(0, 0, 0);
     } else {
       // Contact section
       targetPos.current.set(pointer.x * 0.2, -0.5, 5.0);
-      targetLook.current.set(0, 0, 0);
     }
 
-    // Smoothly interpolate camera position and lookAt
-    state.camera.position.lerp(targetPos.current, THREE.MathUtils.clamp(delta * 2.5, 0.01, 0.1));
+    // Frame-rate independent easing for smooth camera motion
+    const ease = 1 - Math.pow(0.05, Math.min(delta, 0.05));
+    state.camera.position.lerp(targetPos.current, ease);
     state.camera.lookAt(targetLook.current);
   });
 

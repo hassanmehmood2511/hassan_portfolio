@@ -14,7 +14,14 @@ export const Hero: React.FC = () => {
       className="relative min-h-screen flex flex-col justify-center pt-28 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto overflow-hidden"
     >
       {/* Vignette / Scrim gradient backdrop overlay for crisp contrast */}
-      <div className="absolute inset-0 -z-10 bg-gradient-to-r from-[var(--bg-deep)]/90 via-[var(--bg-deep)]/60 to-transparent pointer-events-none rounded-3xl" />
+      <div
+        aria-hidden
+        className="absolute inset-y-0 left-[-50vw] right-0 -z-10 pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(ellipse 60% 55% at 45% 50%, color-mix(in srgb, var(--bg-deep) 75%, transparent) 0%, transparent 100%)",
+        }}
+      />
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
         {/* Left Text Column */}
@@ -90,7 +97,7 @@ export const Hero: React.FC = () => {
               download="Hafiz_Hassan_Mehmood_CV.pdf"
               target="_blank"
               rel="noopener noreferrer"
-              className="sm:hidden"
+              className="lg:hidden"
             >
               <button className="px-5 py-3 rounded-full border border-[var(--accent)]/40 bg-[var(--accent)]/10 text-[var(--accent)] font-semibold text-xs flex items-center gap-2">
                 <Download className="w-4 h-4" />

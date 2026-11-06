@@ -1,54 +1,45 @@
 "use client";
 
-import React, { Suspense } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { AdaptiveDpr, PerformanceMonitor } from "@react-three/drei";
 import { useTheme } from "next-themes";
 import { Lights } from "./Lights";
-import { Particles } from "./Particles";
+import { ParticleField } from "./ParticleField";
 import { CameraRig } from "./CameraRig";
 import { PortraitCard } from "./PortraitCard";
-import { SkillConstellation } from "./SkillConstellation";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
-import { useScrollProgress } from "@/hooks/useScrollProgress";
-import { SkillCategory } from "@/data/skills";
 
-interface SceneProps {
-  selectedCategory?: SkillCategory | "All";
-}
-
-export const SceneContent: React.FC<SceneProps> = ({ selectedCategory = "All" }) => {
+export const SceneContent: React.FC = () => {
   const { theme } = useTheme();
-  const { progress } = useScrollProgress();
   const isMobile = useIsMobile();
   const isDark = theme !== "light";
 
-  // Show SkillConstellation primarily when in or near Skills section
-  const showConstellation = progress > 0.15 && progress < 0.6;
-  // Show PortraitCard in Hero section
-  const showPortrait = progress < 0.3;
-
   return (
     <>
-      <color attach="background" args={[isDark ? "#0A2218" : "#F3EBDD"]} />
       <fog attach="fog" args={[isDark ? "#0A2218" : "#F3EBDD", 5, 20]} />
 
       <CameraRig />
       <Lights />
-      <Particles count={isMobile ? 50 : 120} />
+      <ParticleField isDark={isDark} isMobile={isMobile} />
 
-      {showPortrait && <PortraitCard position={isMobile ? [0, 0, 0] : [2.2, 0.2, 0]} />}
-
-      {showConstellation && (
-        <SkillConstellation selectedCategory={selectedCategory} />
-      )}
+      {/* Portrait fades out smoothly on scroll (handled inside PortraitCard) */}
+      <PortraitCard position={isMobile ? [0, 0, 0] : [2.2, 0.2, 0]} />
     </>
   );
 };
 
-export const Scene: React.FC<SceneProps> = ({ selectedCategory = "All" }) => {
+export const Scene: React.FC = () => {
   const prefersReducedMotion = useReducedMotion();
+  const [tabVisible, setTabVisible] = useState(true);
+
+  // Pause rendering while the browser tab is hidden
+  useEffect(() => {
+    const onVisibility = () => setTabVisible(!document.hidden);
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => document.removeEventListener("visibilitychange", onVisibility);
+  }, []);
 
   if (prefersReducedMotion) {
     return null;
@@ -59,13 +50,14 @@ export const Scene: React.FC<SceneProps> = ({ selectedCategory = "All" }) => {
       <Canvas
         camera={{ position: [0, 0, 5.5], fov: 45 }}
         dpr={[1, 1.5]}
+        frameloop={tabVisible ? "always" : "never"}
         gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
         className="w-full h-full pointer-events-auto"
       >
         <PerformanceMonitor>
           <AdaptiveDpr pixelated />
           <Suspense fallback={null}>
-            <SceneContent selectedCategory={selectedCategory} />
+            <SceneContent />
           </Suspense>
         </PerformanceMonitor>
       </Canvas>

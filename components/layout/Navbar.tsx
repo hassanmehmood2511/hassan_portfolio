@@ -2,10 +2,11 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { siteConfig } from "@/data/site";
 import { ThemeToggle } from "./ThemeToggle";
 import { MagneticButton } from "../ui/MagneticButton";
-import { Menu, X, Download, ExternalLink } from "lucide-react";
+import { Menu, X, Download } from "lucide-react";
 import { MenuOverlay } from "./MenuOverlay";
 
 const navLinks = [
@@ -50,8 +51,15 @@ export const Navbar: React.FC = () => {
             className="flex items-center gap-3 group"
             data-cursor="Home"
           >
-            <div className="w-10 h-10 rounded-xl bg-[var(--accent)]/15 border border-[var(--accent)]/40 flex items-center justify-center font-display font-bold text-lg text-[var(--accent)] group-hover:scale-105 group-hover:border-[var(--accent)] group-hover:shadow-md group-hover:shadow-[var(--accent)]/20 transition-all">
-              HM
+            <div className="relative w-10 h-10 rounded-full overflow-hidden ring-2 ring-[var(--accent)]/60 ring-offset-2 ring-offset-[var(--bg-deep)] shrink-0 group-hover:ring-[var(--accent)] group-hover:scale-105 group-hover:shadow-md group-hover:shadow-[var(--accent)]/25 transition-all">
+              <Image
+                src="/profile/hassan.jpg"
+                alt={siteConfig.name}
+                fill
+                sizes="40px"
+                priority
+                className="object-cover object-top"
+              />
             </div>
             <div className="hidden sm:flex flex-col">
               <span className="font-display font-bold text-sm tracking-wide text-[var(--text-primary)]">
@@ -79,21 +87,22 @@ export const Navbar: React.FC = () => {
 
           {/* Right Action Group */}
           <div className="flex items-center gap-3">
-            {/* TechNest Nova Company Badge */}
-            <a
-              href={siteConfig.companyUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hidden lg:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-mono border border-[var(--accent)]/30 bg-[var(--accent)]/10 text-[var(--accent)] hover:bg-[var(--accent)]/20 transition-all"
-              data-cursor="TechNest Nova"
-            >
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span>Part of {siteConfig.companyName}</span>
-              <ExternalLink className="w-3 h-3 ml-0.5" />
-            </a>
-
             {/* Theme Toggle */}
             <ThemeToggle />
+
+            {/* Hire Me Button: glides to the contact form */}
+            <a href="#contact" className="inline-flex" aria-label="Hire me: go to the contact form">
+              <MagneticButton
+                cursorLabel="Hire Me"
+                className="relative px-4 py-2 text-xs font-semibold rounded-full border border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)] hover:bg-[var(--accent)] hover:text-stone-900 transition-colors flex items-center gap-2"
+              >
+                <span className="relative flex w-2 h-2">
+                  <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60 animate-ping" />
+                  <span className="relative inline-flex w-2 h-2 rounded-full bg-emerald-500" />
+                </span>
+                <span>Hire Me</span>
+              </MagneticButton>
+            </a>
 
             {/* Download CV Button */}
             <a
@@ -101,7 +110,7 @@ export const Navbar: React.FC = () => {
               download="Hafiz_Hassan_Mehmood_CV.pdf"
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden sm:inline-flex"
+              className="hidden lg:inline-flex"
             >
               <MagneticButton
                 cursorLabel="Download CV"

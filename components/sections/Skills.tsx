@@ -1,143 +1,104 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { motion } from "framer-motion";
 import { SectionHeading } from "../ui/SectionHeading";
-import { TiltCard } from "../ui/TiltCard";
-import { skills, skillCategories, SkillCategory, Skill } from "@/data/skills";
-import { Cpu, Sparkles, Filter, CheckCircle2 } from "lucide-react";
+import { skills, skillCategories, SkillCategory } from "@/data/skills";
+import { Code2, Server, Smartphone, LayoutTemplate, Wrench, LucideIcon } from "lucide-react";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
 
-interface SkillsProps {
-  selectedCategory: SkillCategory | "All";
-  onCategoryChange: (cat: SkillCategory | "All") => void;
-}
+const categoryMeta: Record<SkillCategory, { icon: LucideIcon; blurb: string }> = {
+  Languages: { icon: Code2, blurb: "Core programming languages" },
+  "Backend & Database": { icon: Server, blurb: "APIs, services and data" },
+  Mobile: { icon: Smartphone, blurb: "Cross-platform and native apps" },
+  Frontend: { icon: LayoutTemplate, blurb: "Modern web interfaces" },
+  "Tools & Practices": { icon: Wrench, blurb: "Workflow, delivery and craft" },
+};
 
-export const Skills: React.FC<SkillsProps> = ({ selectedCategory, onCategoryChange }) => {
-  const [selectedSkill, setSelectedSkill] = useState<Skill | null>(skills[0]);
+export const Skills: React.FC = () => {
+  const prefersReducedMotion = useReducedMotion();
 
-  const categories: (SkillCategory | "All")[] = ["All", ...skillCategories];
+  const cardVariants = {
+    hidden: { opacity: 0, y: prefersReducedMotion ? 0 : 24 },
+    visible: (i: number) => ({
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.55, delay: prefersReducedMotion ? 0 : i * 0.08, ease: [0.22, 1, 0.36, 1] as const },
+    }),
+  };
 
-  const displayedSkills =
-    selectedCategory === "All"
-      ? skills
-      : skills.filter((s) => s.category === selectedCategory);
+  const chipVariants = {
+    hidden: { opacity: 0, y: prefersReducedMotion ? 0 : 6 },
+    visible: (i: number) => ({
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.35, delay: prefersReducedMotion ? 0 : 0.25 + i * 0.04 },
+    }),
+  };
 
   return (
     <section id="skills" className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       <SectionHeading
         number="02"
-        title="Skill Constellation"
-        subtitle="Explore the interconnected ecosystem of technologies, frameworks, and engineering methodologies."
+        title="Skills & Technologies"
+        subtitle="The languages, frameworks, and tools I use to design, build, and ship reliable software."
       />
 
-      {/* Category Filter Pills */}
-      <div className="flex flex-wrap items-center justify-center gap-2 md:gap-3 mb-10">
-        <span className="text-xs font-mono text-[var(--text-muted)] flex items-center gap-1.5 mr-2">
-          <Filter className="w-3.5 h-3.5 text-[var(--accent)]" /> Filter:
-        </span>
-        {categories.map((cat) => {
-          const isActive = selectedCategory === cat;
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
+        {skillCategories.map((category, idx) => {
+          const { icon: Icon, blurb } = categoryMeta[category];
+          const items = skills.filter((s) => s.category === category);
+
           return (
-            <button
-              key={cat}
-              onClick={() => onCategoryChange(cat)}
-              className={`px-4 py-2 rounded-full text-xs font-mono font-semibold transition-all duration-300 ${
-                isActive
-                  ? "bg-[var(--accent)] text-stone-900 shadow-lg shadow-[var(--accent)]/25 scale-105"
-                  : "bg-[var(--card-bg)] text-[var(--text-muted)] border border-[var(--border-color)] hover:border-[var(--accent)] hover:text-[var(--accent)]"
+            <motion.article
+              key={category}
+              custom={idx}
+              variants={cardVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-60px" }}
+              whileHover={prefersReducedMotion ? undefined : { y: -4 }}
+              transition={{ duration: 0.25 }}
+              className={`group relative flex flex-col rounded-2xl border border-[var(--border-color)] bg-[var(--card-solid)] p-6 md:p-7 shadow-lg transition-colors duration-300 hover:border-[var(--accent)]/60 hover:shadow-xl hover:shadow-[var(--accent)]/10 ${
+                category === "Tools & Practices" ? "lg:col-span-2" : ""
               }`}
-              data-cursor={cat}
             >
-              {cat}
-            </button>
-          );
-        })}
-      </div>
+              {/* Accent top line */}
+              <span className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-[var(--accent)]/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-      {/* Interactive Skill Detail Banner */}
-      {selectedSkill && (
-        <motion.div
-          key={selectedSkill.id}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-12"
-        >
-          <TiltCard className="p-6 md:p-8 bg-gradient-to-r from-[var(--card-bg)] via-[var(--bg-forest)]/40 to-[var(--card-bg)] border-[var(--accent)]/40">
-            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-              <div>
-                <div className="flex items-center gap-3 mb-2">
-                  <span className="px-3 py-1 rounded-full text-[11px] font-mono bg-[var(--accent)]/20 text-[var(--accent)] border border-[var(--accent)]/40">
-                    {selectedSkill.category}
-                  </span>
-                  <span className="text-xs font-mono text-[var(--text-muted)]">
-                    Proficiency: <strong className="text-[var(--text-primary)]">{selectedSkill.level}</strong>
-                  </span>
+              <header className="flex items-center gap-4 mb-5">
+                <div className="flex items-center justify-center w-11 h-11 rounded-xl bg-[var(--accent)]/12 border border-[var(--accent)]/30 text-[var(--accent)] group-hover:bg-[var(--accent)]/20 transition-colors">
+                  <Icon className="w-5 h-5" />
                 </div>
-                <h3 className="font-display font-extrabold text-2xl text-[var(--text-primary)]">
-                  {selectedSkill.name}
-                </h3>
-                <p className="text-sm text-[var(--text-muted)] mt-1 max-w-2xl">
-                  {selectedSkill.description}
-                </p>
-              </div>
-
-              {/* Connected skill chips */}
-              <div className="flex flex-col gap-1.5 w-full md:w-auto">
-                <span className="text-[11px] font-mono text-[var(--text-muted)] uppercase tracking-wider">
-                  Connected Technologies
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-display font-bold text-lg text-[var(--text-primary)] leading-tight">
+                    {category}
+                  </h3>
+                  <p className="text-xs text-[var(--text-muted)] mt-0.5">{blurb}</p>
+                </div>
+                <span className="font-mono text-xs text-[var(--text-muted)] tabular-nums">
+                  {String(items.length).padStart(2, "0")}
                 </span>
-                <div className="flex flex-wrap gap-1.5">
-                  {selectedSkill.connections.map((connId) => {
-                    const conn = skills.find((s) => s.id === connId);
-                    return (
-                      <span
-                        key={connId}
-                        className="px-2.5 py-1 rounded-md text-xs font-mono bg-[var(--bg-deep)] text-[var(--sand-light)] border border-[var(--border-color)]"
-                      >
-                        {conn ? conn.name : connId}
-                      </span>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-          </TiltCard>
-        </motion.div>
-      )}
+              </header>
 
-      {/* Grid of Skill Cards (Accessible HTML List & Card Grid) */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
-        {displayedSkills.map((skill) => {
-          const isSelected = selectedSkill?.id === skill.id;
-          return (
-            <motion.div
-              key={skill.id}
-              whileHover={{ scale: 1.03, y: -3 }}
-              transition={{ duration: 0.2 }}
-            >
-              <button
-                onClick={() => setSelectedSkill(skill)}
-                className={`w-full text-left p-4 rounded-xl border transition-all duration-300 ${
-                  isSelected
-                    ? "bg-[var(--accent)]/15 border-[var(--accent)] shadow-md shadow-[var(--accent)]/20"
-                    : "bg-[var(--card-bg)] border-[var(--border-color)] hover:border-[var(--accent)]/60"
-                }`}
-                data-cursor={skill.name}
-              >
-                <div className="flex items-center justify-between mb-2">
-                  <span className="w-2 h-2 rounded-full bg-[var(--accent)]" />
-                  <span className="text-[10px] font-mono text-[var(--text-muted)]">
-                    {skill.level}
-                  </span>
-                </div>
-                <div className="font-display font-bold text-sm text-[var(--text-primary)]">
-                  {skill.name}
-                </div>
-                <div className="text-[10px] font-mono text-[var(--text-muted)] truncate mt-0.5">
-                  {skill.category}
-                </div>
-              </button>
-            </motion.div>
+              <ul className="flex flex-wrap gap-2">
+                {items.map((skill, i) => (
+                  <motion.li
+                    key={skill.id}
+                    custom={i}
+                    variants={chipVariants}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
+                    title={skill.description}
+                    className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium bg-[var(--bg-deep)]/70 text-[var(--text-primary)] border border-[var(--border-color)] hover:border-[var(--accent)] hover:text-[var(--accent)] hover:-translate-y-0.5 transition-all duration-200 cursor-default"
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)]" />
+                    {skill.name}
+                  </motion.li>
+                ))}
+              </ul>
+            </motion.article>
           );
         })}
       </div>

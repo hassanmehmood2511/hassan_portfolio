@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { siteConfig } from "@/data/site";
 import { ExternalLink, Mail, ArrowUp } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "../ui/Icons";
@@ -23,8 +24,14 @@ export const Footer: React.FC = () => {
         {/* Left column: Brand & Tagline */}
         <div className="flex flex-col items-center md:items-start gap-2 text-center md:text-left">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-[var(--accent)]/15 border border-[var(--accent)]/40 flex items-center justify-center font-display font-bold text-xs text-[var(--accent)]">
-              HM
+            <div className="relative w-12 h-12 rounded-full overflow-hidden ring-2 ring-[var(--accent)]/60 ring-offset-2 ring-offset-[var(--bg-deep)] shrink-0">
+              <Image
+                src="/profile/hassan.jpg"
+                alt={siteConfig.name}
+                fill
+                sizes="48px"
+                className="object-cover object-top"
+              />
             </div>
             <span className="font-display font-bold text-base tracking-wide text-[var(--text-primary)]">
               {siteConfig.name}

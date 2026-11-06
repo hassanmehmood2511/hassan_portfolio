@@ -23,9 +23,9 @@ export const experiences: ExperienceItem[] = [
     isProminent: true,
     isEditablePlaceholder: true,
     bullets: [
-      "[EDITABLE PLACEHOLDER] Architect and develop AI-driven full-stack web and mobile applications using Spring Boot, Next.js, and Flutter.",
-      "[EDITABLE PLACEHOLDER] Lead end-to-end project delivery cycles, establishing clean code guidelines, code reviews, and automated CI/CD pipelines.",
-      "[EDITABLE PLACEHOLDER] Collaborate closely with cross-functional teams and stakeholders to translate complex business demands into performant microservices.",
+      "Architect and develop AI-driven full-stack web and mobile applications using Spring Boot, Next.js, and Flutter.",
+      "Lead end-to-end project delivery cycles, establishing clean code guidelines, code reviews, and automated CI/CD pipelines.",
+      "Collaborate closely with cross-functional teams and stakeholders to translate complex business demands into performant microservices.",
     ],
     technologies: ["Java", "Spring Boot", "Next.js", "Flutter", "AI Tooling", "Postgres/MySQL"],
   },
@@ -70,17 +70,5 @@ export const experiences: ExperienceItem[] = [
       "Executed testing, bug resolution, feasibility research, and technical documentation.",
     ],
     technologies: ["JavaScript", "HTML5", "CSS3", "Git", "Testing"],
-  },
-  {
-    id: "devcastle-institute",
-    role: "Android App Development Training",
-    company: "DevCastle Training Institute",
-    period: "Jun 2026 – Aug 2026",
-    location: "Bahawalpur, Pakistan",
-    bullets: [
-      "Built native Android apps with Java, Kotlin, and Jetpack Compose.",
-      "Mastered mobile UI/UX state management, local database storage, and app publishing workflows.",
-    ],
-    technologies: ["Android SDK", "Kotlin", "Java", "Jetpack Compose", "Mobile Architecture"],
   },
 ];

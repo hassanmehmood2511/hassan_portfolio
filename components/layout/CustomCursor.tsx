@@ -33,7 +33,7 @@ export const CustomCursor: React.FC = () => {
 
       {/* Outer Glow Ring / Label Container */}
       <motion.div
-        className="fixed top-0 left-0 rounded-full border border-[var(--accent)]/60 bg-[var(--accent)]/15 backdrop-blur-[2px] pointer-events-none z-40 flex items-center justify-center text-center shadow-lg shadow-[var(--accent)]/20"
+        className="fixed top-0 left-0 rounded-full border border-[var(--accent)]/60 bg-[var(--accent)]/15 pointer-events-none z-40 flex items-center justify-center text-center shadow-lg shadow-[var(--accent)]/20"
         animate={{
           x: pointer.pixelX - (hasLabel ? 36 : 18),
           y: pointer.pixelY - (hasLabel ? 36 : 18),

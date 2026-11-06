@@ -82,7 +82,7 @@ export const TiltCard: React.FC<TiltCardProps> = ({
         transformStyle: disableEffects ? "flat" : "preserve-3d",
         perspective: 1000,
       }}
-      className={`relative rounded-2xl overflow-hidden border border-[var(--border-color)] bg-[var(--card-bg)] backdrop-blur-md shadow-xl transition-shadow duration-300 hover:border-[var(--accent)] hover:shadow-2xl hover:shadow-[var(--accent)]/15 ${className}`}
+      className={`relative rounded-2xl overflow-hidden border border-[var(--border-color)] bg-[var(--card-solid)] shadow-xl transition-shadow duration-300 hover:border-[var(--accent)] hover:shadow-2xl hover:shadow-[var(--accent)]/15 ${className}`}
     >
       {/* Soft moving copper-gold glare overlay following cursor */}
       {!disableEffects && (

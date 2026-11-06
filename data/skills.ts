@@ -258,4 +258,13 @@ export const skills: Skill[] = [
     position: [-1.5, -0.8, -1.2],
     connections: ["oop", "spring-boot", "prompt-engineering"],
   },
+  {
+    id: "qa-testing",
+    name: "QA Testing",
+    category: "Tools & Practices",
+    level: "Proficient",
+    description: "Manual and API testing, test case design, bug reporting, and regression checks.",
+    position: [-0.6, -2.2, 0.4],
+    connections: ["postman", "software-arch"],
+  },
 ];

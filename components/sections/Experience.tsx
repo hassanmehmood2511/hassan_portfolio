@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { SectionHeading } from "../ui/SectionHeading";
 import { TiltCard } from "../ui/TiltCard";
 import { FloatingGlassShapes } from "../ui/FloatingGlassShapes";
@@ -19,6 +19,14 @@ export const Experience: React.FC = () => {
     target: sectionRef,
     offset: ["start end", "end start"],
   });
+
+  // Timeline line draws itself as the user scrolls through the entries
+  const timelineRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress: timelineProgress } = useScroll({
+    target: timelineRef,
+    offset: ["start 75%", "end 60%"],
+  });
+  const lineScale = useSpring(timelineProgress, { stiffness: 120, damping: 30, mass: 0.4 });
 
   const headingY = useTransform(scrollYProgress, [0, 1], [0, -25]);
   const contentY = useTransform(scrollYProgress, [0, 1], [0, 15]);
@@ -42,35 +50,58 @@ export const Experience: React.FC = () => {
       </motion.div>
 
       <motion.div
+        ref={timelineRef}
         style={disableParallax ? {} : { y: contentY }}
         className="relative z-10 border-l-2 border-[var(--border-color)] ml-4 md:ml-8 pl-6 md:pl-10 space-y-12"
       >
-        {/* Animated glowing vertical timeline line overlay */}
+        {/* Vertical timeline line that draws downward with scroll */}
         <motion.div
-          className="absolute left-[-2px] top-0 w-[2px] bg-gradient-to-b from-[var(--accent)] via-[var(--green-mid)] to-[var(--accent)]"
-          initial={{ height: "0%" }}
-          whileInView={{ height: "100%" }}
-          viewport={{ once: true }}
-          transition={{ duration: 1.5, ease: "easeInOut" }}
+          aria-hidden
+          className="absolute left-[-2px] top-0 bottom-0 w-[2px] origin-top bg-gradient-to-b from-[var(--accent)] via-[var(--green-mid)] to-[var(--accent)] shadow-[0_0_12px_var(--accent)]"
+          style={{ scaleY: prefersReducedMotion ? 1 : lineScale }}
         />
 
-        {experiences.map((exp, idx) => {
+        {experiences.map((exp) => {
           const isProminent = exp.isProminent;
 
           return (
             <motion.div
               key={exp.id}
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.6, delay: idx * 0.1 }}
+              initial={
+                prefersReducedMotion
+                  ? { opacity: 0 }
+                  : { opacity: 0, x: 32, filter: "blur(6px)" }
+              }
+              whileInView={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
               className="relative"
             >
               {/* Timeline Marker Dot */}
-              <div
+              <motion.div
+                initial={prefersReducedMotion ? { scale: isProminent ? 1.25 : 1 } : { scale: 0 }}
+                whileInView={
+                  prefersReducedMotion
+                    ? { scale: isProminent ? 1.25 : 1 }
+                    : {
+                        scale: isProminent ? 1.25 : 1,
+                        boxShadow: [
+                          "0 0 0 0px rgba(201, 138, 75, 0)",
+                          "0 0 0 10px rgba(201, 138, 75, 0.35)",
+                          isProminent
+                            ? "0 0 14px 2px rgba(201, 138, 75, 0.5)"
+                            : "0 0 0 18px rgba(201, 138, 75, 0)",
+                        ],
+                      }
+                }
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{
+                  scale: { type: "spring", stiffness: 320, damping: 18, delay: 0.15 },
+                  boxShadow: { duration: 1.2, delay: 0.3, ease: "easeOut" },
+                }}
                 className={`absolute -left-[31px] md:-left-[47px] top-1.5 w-5 h-5 rounded-full border-2 flex items-center justify-center ${
                   isProminent
-                    ? "bg-[var(--accent)] border-[var(--sand-light)] shadow-lg shadow-[var(--accent)]/50 scale-125"
+                    ? "bg-[var(--accent)] border-[var(--sand-light)] shadow-lg shadow-[var(--accent)]/50"
                     : "bg-[var(--bg-deep)] border-[var(--accent)]"
                 }`}
               >
@@ -79,7 +110,7 @@ export const Experience: React.FC = () => {
                     isProminent ? "bg-stone-900" : "bg-[var(--accent)]"
                   }`}
                 />
-              </div>
+              </motion.div>
 
               {/* Experience Card */}
               <TiltCard
