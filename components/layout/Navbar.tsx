@@ -117,7 +117,7 @@ export const Navbar: React.FC = () => {
                 className="px-4 py-2 text-xs font-semibold rounded-full bg-[var(--accent)] text-stone-900 hover:bg-[var(--accent-hover)] shadow-md shadow-[var(--accent)]/20 flex items-center gap-2"
               >
                 <Download className="w-3.5 h-3.5" />
-                <span>Download CV</span>
+                <span>Download cv</span>
               </MagneticButton>
             </a>
 
