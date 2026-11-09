@@ -1,0 +1,54 @@
+# Auto-deploy: every push to main builds the site and uploads it to
+# hassan.technestnova.com (Namecheap shared hosting) over FTPS.
+#
+# Required repository secrets (GitHub → Settings → Secrets and variables → Actions):
+#   FTP_SERVER    premium204.web-hosting.com
+#   FTP_USERNAME  the cPanel FTP account whose directory is hassan.technestnova.com
+#   FTP_PASSWORD  that FTP account's password
+
+name: Deploy to hassan.technestnova.com
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: # allows a manual "Run workflow" button in the Actions tab
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Remove server-only API route
+        # The live site is a static export; the contact form uses public/contact.php instead.
+        run: rm -rf app/api
+
+      - name: Build static site
+        run: npm run build
+        env:
+          NEXT_TELEMETRY_DISABLED: 1
+
+      - name: Upload changed files to hosting
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftps
+          port: 21
+          local-dir: ./out/
+          server-dir: ./

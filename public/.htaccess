@@ -1,6 +1,11 @@
 # hassan.technestnova.com — static Next.js export on Apache (Namecheap)
 
 Options -Indexes
+
+# Hide the auto-deploy bookkeeping file
+<Files ".ftp-deploy-sync-state.json">
+  Require all denied
+</Files>
 DirectoryIndex index.html index.php
 
 # Force HTTPS
