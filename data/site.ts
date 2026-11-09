@@ -25,7 +25,7 @@ export const siteConfig: SiteConfig = {
   linkedIn: "https://linkedin.com/in/hafiz-hassan-mehmood-055398312",
   gitHub: "https://github.com/hassanmehmood2511",
   companyName: "TechNest Nova",
-  companyUrl: "https://technestnova.com", // Placeholder company URL
+  companyUrl: "https://technestnova.com",
   cvUrl: "/Hafiz_Hassan_Mehmood_CV.pdf",
   aboutText:
     "I'm a software developer who builds scalable backends with Java and Spring Boot and polished mobile and web experiences with Flutter, Kotlin and Next.js. I currently serve as Senior Software Developer at TechNest Nova and lead teams as a Team Lead Intern at BUILTIN Soft, coordinating sprints with Jira and ClickUp. I'm completing my BS in Information Technology at The Islamia University of Bahawalpur, and I use AI tooling and prompt engineering to ship faster without cutting corners on clean architecture and OOP. Turning messy problems into clean, reliable systems is what drives me every day.",

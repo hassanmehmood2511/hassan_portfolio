@@ -1,25 +1,26 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, Inter } from "next/font/google";
+import localFont from "next/font/local";
 import { ThemeProvider } from "next-themes";
 import { siteConfig } from "@/data/site";
 import "./globals.css";
 
-const spaceGrotesk = Space_Grotesk({
+// Self-hosted fonts (no Google Fonts request at build or page load)
+const spaceGrotesk = localFont({
+  src: "./fonts/SpaceGrotesk-Variable.woff2",
   variable: "--font-space-grotesk",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: "300 700",
   display: "swap",
 });
 
-const inter = Inter({
+const inter = localFont({
+  src: "./fonts/Inter-Variable.woff2",
   variable: "--font-inter",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+  weight: "100 900",
   display: "swap",
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://hassanmehmood.dev"),
+  metadataBase: new URL("https://hassan.technestnova.com"),
   title: `${siteConfig.name} | Senior Software Developer`,
   description: `${siteConfig.headline}. ${siteConfig.subline}`,
   keywords: [
@@ -40,7 +41,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://hassanmehmood.dev",
+    url: "https://hassan.technestnova.com",
     title: `${siteConfig.name} | Senior Software Developer at TechNest Nova`,
     description: siteConfig.subline,
     siteName: siteConfig.name,
