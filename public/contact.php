@@ -132,9 +132,13 @@ if (!empty($config['resend_api_key']) && function_exists('curl_init')) {
 
 // ---------- Option 2: hosting mail() ----------
 if (!$sent) {
+    // mail() must send from our own domain (e.g. never from resend.dev)
+    $mailFrom = stripos($config['from_email'], '@technestnova.com') !== false
+        ? $config['from_email']
+        : 'Portfolio <hassan@technestnova.com>';
     $boundary = 'b' . bin2hex(random_bytes(8));
     $headers  = [
-        'From: ' . $config['from_email'],
+        'From: ' . $mailFrom,
         'Reply-To: ' . $clean($email),
         'MIME-Version: 1.0',
         'Content-Type: multipart/alternative; boundary="' . $boundary . '"',
